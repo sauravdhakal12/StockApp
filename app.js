@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const stockRouter = require("./controllers/stock");
 const authRouter = require("./controllers/authenticate");
 
+app.use(express.json());
+
 // Connect to DB
 mongoose.connect(config.MONGODB_URI)
   .then((res) => {
