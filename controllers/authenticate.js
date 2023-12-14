@@ -44,6 +44,8 @@ authRouter.get("/login", async (req, res) => {
     email: user.email,
     id: user.id,
   }
+
+  // TODO: User 'remember me' & Set-up an expirey time for tokens 
   const token = jwt.sign(userJWT, process.env.SECRET);
 
   return res.status(200).send({ token, displayName: user.displayName });
