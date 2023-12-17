@@ -25,7 +25,7 @@ authRouter.get("/login", async (req, res) => {
   const body = req.body;
 
   // Make sure no fields are empty
-  if (!body.displayName || !body.email || !body.password) {
+  if (!body.email || !body.password) {
     return res.status(400).json({ "error": "All fields are required" });
   }
 

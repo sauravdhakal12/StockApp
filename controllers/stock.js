@@ -9,6 +9,10 @@ const jwt = require("jsonwebtoken");
 // A router object to handle routes on Home Page.
 const stockRouter = require("express").Router()
 
+// Import schema for Portfolio and connection object for both DB 
+const portSchema = require("../models/portfolio");
+const conn = require("../utils/dbConn");
+
 const userLoggedIn = (req) => {
   const auth = req.headers.authorization;
   return auth ? auth.replace("Bearer ", "") : null;
@@ -34,6 +38,13 @@ stockRouter.get("/", (req, res) => {
 
     // Decode the payload and return
     const userInfo = jwt.decode(user);
+
+    // DEMO: TO TEST
+    const portfolioModel = conn.portDbConn.model(userInfo.id, portSchema);
+    portfolioModel.find({}).then((res) => {
+      console.log(res);
+    })
+
     return res.send(`Hello ${userInfo.email}`);
   }
 
