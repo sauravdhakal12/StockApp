@@ -1,14 +1,13 @@
 const jwt = require('jsonwebtoken')
 const authRouter = require("express").Router();
-const userSchema = require("../models/users");
 const bcrypt = require("bcrypt");
 const logger = require("../utils/logger");
-
+const conn = require("../utils/dbConn");
 
 // Check if user with given email exists
 const userExists = async (email) => {
   try {
-    const res = await userSchema.findOne({ "email": email })
+    const res = conn.usersDbMod.findOne({ "email": email })
     return res;
   }
   catch (exception) {
@@ -74,7 +73,7 @@ authRouter.post("/signup", async (req, res) => {
   const passwordHash = await bcrypt.hash(body.password, saltRound);
 
   // Else, create a new user
-  const newUser = new userSchema({
+  const newUser = new conn.usersDbMod({
     displayName: body.displayName,
     email: body.email,
     password: passwordHash,
