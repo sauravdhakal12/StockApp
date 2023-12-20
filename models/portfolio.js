@@ -31,7 +31,7 @@ const portSchema = new mongoose.Schema({
   },
 });
 
-portSchema.set('toJSON', {
+portSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     //Todo: similarly later
