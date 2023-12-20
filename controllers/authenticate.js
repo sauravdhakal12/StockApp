@@ -1,20 +1,18 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 const authRouter = require("express").Router();
 const bcrypt = require("bcrypt");
-const logger = require("../utils/logger");
 const conn = require("../utils/dbConn");
 
 // Check if user with given email exists
-const userExists = async (email) => {
+const userExists = async (email, next) => {
   try {
-    const res = conn.usersDbMod.findOne({ "email": email })
+    const res = conn.usersDbMod.findOne({ "email": email });
     return res;
   }
   catch (exception) {
-    logger.error(exception);
-    return true;
+    next(exception);
   }
-}
+};
 
 
 /**************** 
@@ -34,7 +32,7 @@ authRouter.get("/login", async (req, res) => {
     ? false
     : await bcrypt.compare(body.password, user.password);
 
-  if (!(user && user !== true && passswordCorrect)) {
+  if (!(user && passswordCorrect)) {
     return res.status(401).json({ "error": "Invalid email or password" });
   }
 
@@ -42,9 +40,9 @@ authRouter.get("/login", async (req, res) => {
   const userJWT = {
     email: user.email,
     id: user.id,
-  }
+  };
 
-  // TODO: User 'remember me' & Set-up an expirey time for tokens 
+  // TODO: User 'remember me' & Set-up an expiry time for tokens 
   const token = jwt.sign(userJWT, process.env.SECRET);
 
   return res.status(200).send({ token, displayName: user.displayName });
@@ -54,7 +52,7 @@ authRouter.get("/login", async (req, res) => {
 /**************** 
   SIGNUP
 *****************/
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", async (req, res, next) => {
   const body = req.body;
 
   // Make sure no fields are empty
@@ -72,7 +70,7 @@ authRouter.post("/signup", async (req, res) => {
   const saltRound = 10;  // Hashing happends 2^10 times
   const passwordHash = await bcrypt.hash(body.password, saltRound);
 
-  // Else, create a new user
+  // Create a new user
   const newUser = new conn.usersDbMod({
     displayName: body.displayName,
     email: body.email,
@@ -85,9 +83,8 @@ authRouter.post("/signup", async (req, res) => {
       return res.json(savedUser);
     })
     .catch((err) => {
-      logger.error(err);
-      return res.status(400).json({ "error": "Something went wrong. Try again later" });
-    })
+      next(err);
+    });
 });
 
 module.exports = authRouter;
