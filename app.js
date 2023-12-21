@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 // Import router objects
 const stockRouter = require("./controllers/stock");
@@ -7,6 +8,7 @@ const authRouter = require("./controllers/authenticate");
 const { errorHandler, checkLoggedIn, unknownEndPoint } = require("./utils/middleware");
 
 app.use(express.json());
+app.use(cors());
 
 // app.use for routes, works as middleware
 

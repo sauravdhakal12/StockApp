@@ -18,7 +18,7 @@ const userExists = async (email, next) => {
 /**************** 
   LOGIN
 *****************/
-authRouter.get("/login", async (req, res) => {
+authRouter.post("/login", async (req, res) => {
   const body = req.body;
 
   // Make sure no fields are empty
