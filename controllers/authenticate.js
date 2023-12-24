@@ -23,7 +23,10 @@ authRouter.post("/login", async (req, res) => {
 
   // Make sure no fields are empty
   if (!body.email || !body.password) {
-    return res.status(400).json({ "error": "All fields are required" });
+    return res.status(200).json({
+      "success": false,
+      "message": "All fields are required"
+    });
   }
 
   // Check to see if user already exists
@@ -33,8 +36,13 @@ authRouter.post("/login", async (req, res) => {
     : await bcrypt.compare(body.password, user.password);
 
   if (!(user && passswordCorrect)) {
-    return res.status(401).json({ "error": "Invalid email or password" });
+    return res.status(200).json({
+      "success": false,
+      "message": "Invalid email or password"
+    });
   }
+
+  //TODO: a function to create and sign token
 
   // Create and sign token
   const userJWT = {
@@ -45,7 +53,13 @@ authRouter.post("/login", async (req, res) => {
   // TODO: User 'remember me' & Set-up an expiry time for tokens 
   const token = jwt.sign(userJWT, process.env.SECRET);
 
-  return res.status(200).send({ token, displayName: user.displayName });
+  return res.status(200).json(
+    {
+      "success": true,
+      "message": "",
+      "token": token,
+      "displayName": user.displayName
+    });
 });
 
 
@@ -57,13 +71,19 @@ authRouter.post("/signup", async (req, res, next) => {
 
   // Make sure no fields are empty
   if (!body.displayName || !body.email || !body.password) {
-    return res.status(400).json({ "error": "All fields are required" });
+    return res.status(200).json({
+      "success": false,
+      "message": "All fields are required",
+    });
   }
 
   // Check to see if user already exists
   const emailExists = await userExists(body.email);
   if (emailExists) {
-    return res.status(400).json({ "error": "User with this email already exists" });
+    return res.status(200).json({
+      "success": false,
+      "message": "User with this email already exists",
+    });
   }
 
   // Hash the password
@@ -77,14 +97,32 @@ authRouter.post("/signup", async (req, res, next) => {
     password: passwordHash,
   });
 
-  // Create new user
-  newUser.save()
-    .then((savedUser) => {
-      return res.json(savedUser);
-    })
-    .catch((err) => {
-      next(err);
-    });
+
+  try {
+
+    // Create new user
+    const newUserData = await newUser.save();
+
+    // Create and sign token
+    const userJWT = {
+      email: newUserData.email,
+      id: newUserData.id,
+    };
+
+    // TODO: User 'remember me' & Set-up an expiry time for tokens 
+    const token = jwt.sign(userJWT, process.env.SECRET);
+
+    return res.status(200).json(
+      {
+        "success": true,
+        "message": "",
+        "token": token,
+        "displayName": newUserData.displayName
+      });
+  }
+  catch (error) {
+    next(error);
+  }
 });
 
 module.exports = authRouter;
