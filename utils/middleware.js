@@ -3,7 +3,9 @@ const logger = require("./logger");
 // Ensure user is logged in 
 const checkLoggedIn = (req, res, next) => {
   if (
-    !(req.path === "/api/auth/login" || req.path === "/api/auth/signup")
+    !(req.path === "/api/auth/login" ||
+      req.path === "/api/auth/signup"
+    )
   ) {
     const t = req.headers.authorization;
     if (!t)
