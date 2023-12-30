@@ -53,7 +53,13 @@ authRouter.post("/login", async (req, res) => {
   // TODO: User 'remember me' & Set-up an expiry time for tokens 
   const token = jwt.sign(userJWT, process.env.SECRET);
 
-  return res.status(200).json(
+  // TODO: res.cookie.redirect
+  res.cookie("token", token, {
+    maxAge: (1000 * 60 * 60 * 24 * 7),
+  });
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+
+  return res.send(
     {
       "success": true,
       "message": "",
