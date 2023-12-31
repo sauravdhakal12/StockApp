@@ -11,7 +11,7 @@ const portDbConn = mongoose.createConnection(config.PORTFOLIO_URI);
 
 // Create model out of userSchema
 module.exports = {
-  "usersDbMod": usersDbConn.model('User', userSchema),
+  "usersDbMod": usersDbConn.model("User", userSchema),
   portDbConn,
   portSchema,
 };
