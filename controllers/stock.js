@@ -65,4 +65,30 @@ stockRouter.post("/", async (req, res, next) => {
 
 });
 
+
+stockRouter.delete("/:id", async (req, res, next) => {
+  const id = req.params.id;
+  const token = res.locals.token;
+
+  try {
+    const userInfo = jwt.verify(token, process.env.SECRET);
+
+    const portDbModel = conn.portDbConn.model(userInfo.id, conn.portSchema);
+    const r = await portDbModel.findByIdAndDelete(id);
+
+    if (r) {
+      return res.status(200).json({ "success": true, "message": "Delete success" });
+    }
+    else {
+      return res.status(200).json({ "success": false, "message": "Requested symbol dosen't exist" });
+    }
+
+  }
+
+  // Cannot verify or DB error
+  catch (exception) {
+    next(exception);
+  }
+});
+
 module.exports = stockRouter;

@@ -1,7 +1,7 @@
 const customCors = ({
   maxAge = 0,
   origin = "*",
-  methods = "GET,POST",
+  methods = "GET,POST,DELETE,PUT",
   allowHeaders = [],
   status = 204,
   withCredentials = false
@@ -33,8 +33,11 @@ const customCors = ({
     }
 
     // Maybe just use else
-    else if (req.method === "POST" || req.method === "GET") {
+    else if (req.method === "POST" || req.method === "GET" || req.method === "DELETE") {
       res.setHeader("Access-Control-Allow-Origin", origin);
+
+      // Get request also sends credentials(cookies) so allow it
+      withCredentials ? res.setHeader("Access-Control-Allow-Credentials", withCredentials) : withCredentials;
     }
     next();
   };

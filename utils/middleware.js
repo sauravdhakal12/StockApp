@@ -7,7 +7,8 @@ const checkLoggedIn = (req, res, next) => {
       req.path === "/api/auth/signup"
     )
   ) {
-    const t = req.headers.authorization;
+    const t = req.cookies.token;
+
     if (!t)
 
       // return res.redirect(302, "/api/auth/login");
@@ -21,7 +22,7 @@ const checkLoggedIn = (req, res, next) => {
     */
 
     // Extract token and place it in res.locals
-    else res.locals.token = t.replace("Bearer ", "");
+    else res.locals.token = t;
   }
 
   // If logged in, continue

@@ -62,7 +62,6 @@ authRouter.post("/login", async (req, res) => {
     {
       "success": true,
       "message": "",
-      "token": token,
       "displayName": user.displayName
     });
 });
@@ -116,7 +115,12 @@ authRouter.post("/signup", async (req, res, next) => {
 
     // TODO: User 'remember me' & Set-up an expiry time for tokens 
     const token = jwt.sign(userJWT, process.env.SECRET);
-    return res.status(200).json(
+
+    res.cookie("token", token, {
+      maxAge: (1000 * 60 * 60 * 24 * 7),
+    });
+
+    return res.send(
       {
         "success": true,
         "message": "",
