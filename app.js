@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const customCors = require("./utils/cors");
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 // Import router objects
 const stockRouter = require("./controllers/stock");
@@ -23,8 +24,8 @@ app.use(checkLoggedIn);
 app.use("/api/auth", authRouter); // Login, SignUp
 app.use("/", stockRouter);  // Home Page
 
-app.use(errorHandler);
 app.use(unknownEndPoint);
+app.use(errorHandler);
 
 // Export app for index.js file
 module.exports = app;
