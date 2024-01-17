@@ -42,8 +42,6 @@ authRouter.post("/login", async (req, res) => {
     });
   }
 
-  //TODO: a function to create and sign token
-
   // Create and sign token
   const userJWT = {
     email: user.email,
