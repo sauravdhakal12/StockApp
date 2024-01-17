@@ -2,6 +2,8 @@ const logger = require("./logger");
 
 // Ensure user is logged in 
 const checkLoggedIn = (req, res, next) => {
+
+  // If "logging-in" or "signing-up", no need to check for token 
   if (
     !(req.path === "/api/auth/login" ||
       req.path === "/api/auth/signup"
@@ -48,6 +50,8 @@ const errorHandler = (error, req, res, next) => {
       "success": false,
       "message": "Token Expired. Login-in again"
     });
+
+  // TODO: Add handeling for DB constrain error
 
   else {
     logger.error(error);
