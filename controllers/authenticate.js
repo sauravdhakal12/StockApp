@@ -111,6 +111,7 @@ authRouter.post("/signup", async (req, res, next) => {
       id: newUserData.id,
     };
 
+    console.log(process.env.SECRET);
     // TODO: User 'remember me' & Set-up an expiry time for tokens 
     const token = jwt.sign(userJWT, process.env.SECRET);
 
