@@ -12,7 +12,7 @@ const { errorHandler, checkLoggedIn, unknownEndPoint } = require("./utils/middle
 
 app.use(customCors({
   withCredentials: true,
-  origin: "http://localhost:5173",
+  origin: "https://stock-app-frontend-pi.vercel.app",
   maxAge: 86400
 }));
 app.use(cookieParser());
